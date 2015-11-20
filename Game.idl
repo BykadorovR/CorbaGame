@@ -1,0 +1,18 @@
+module Game
+{
+  interface ICell {
+  	long getCell();
+  	string getID();
+  	void setCell(in long value, in string ID);
+  };
+  interface IGame
+  {
+  	typedef sequence <ICell, 100> grid;
+  	typedef sequence <string,2> str2;
+  	grid getGrid();
+  	long gameIsReady();
+  	str2 getID();
+  	void connect(in string ID);
+  	oneway void disconnect(in string ID);
+  };
+};
