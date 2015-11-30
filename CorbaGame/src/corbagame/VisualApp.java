@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 import corbagame.GameClient;
+import Game.ICell;
+import Game.IGame;
 /**
  *
  * @author akokoshn
@@ -17,7 +19,11 @@ public class VisualApp extends javax.swing.JFrame {
 
     int grid[]; // 0 - free, 1 - live "0", 2 - death "0", 3 - live "x", 4 - death "x"
     int _player; //1 - "0", 3 - "x", -1 - "none"
+    int _u_player;
     GameClient _client;
+    ICell[] _grid;
+    String MyID;
+    String[] args;
     
     /**
      * Creates new form VisualApp
@@ -29,8 +35,8 @@ public class VisualApp extends javax.swing.JFrame {
         {
             grid[i] = 0;
         }
-        _client = new GameClient();
         _player = 3;
+        _client = new GameClient(this);
         //ask _player
         //ask grid
         
@@ -118,7 +124,9 @@ public class VisualApp extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        _client.start();
         Draw();
+        
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -129,10 +137,12 @@ public class VisualApp extends javax.swing.JFrame {
             if ((_player == 1) && ((grid[index] == 3) || (grid[index] == 0)))
             {
                 grid[index] = _player;
+                _grid[index].setCell(1, MyID);
             }
             if ((_player == 3) && ((grid[index] == 1) || (grid[index] == 0)))
             {
                 grid[index] = _player;
+                _grid[index].setCell(1, MyID);
             }
         }
         
@@ -340,6 +350,69 @@ public class VisualApp extends javax.swing.JFrame {
             }
         }
         
+    }
+    public void SetParam(ICell[] __grid, String[] ID, String _MyID)
+    {
+        MyID = _MyID;
+        jTextArea1.append("START GAME\n");
+        jTextArea1.append("MY ID: " + MyID + "\n");
+        if (MyID.equals(ID[0]))
+        {
+            _player = 1;
+            _u_player = 3;
+            jTextArea1.append("I AM  o\n");
+        }
+        else
+        {
+            _player = 3;
+            _u_player = 1;
+            jTextArea1.append("I AM  x\n");
+        }
+        
+        _grid = __grid;
+        for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)
+            {
+                if (_grid[i*10 + j].getCell() != 0)
+                {
+                    if (_grid[i*10 + j].getID() == ID[0])
+                    {
+                        grid[i*10 + j] = 1;
+                    }
+                    else
+                    {
+                        grid[i*10 + j] = 3;
+                    }
+                }
+            }
+        Draw();
+    }
+    
+    public void SetGrid(ICell[] __grid)
+    {
+        _grid = __grid;
+        for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)
+            {
+                if (_grid[i*10 + j].getCell() != 0)
+                {
+                    if (_grid[i*10 + j].getID() == MyID)
+                    {
+                        if (_grid[i*10 + j].getCell() == 1)
+                            grid[i*10 + j] = _player;
+                        else
+                            grid[i*10 + j] = _player + 1;
+                    }
+                    else
+                    {
+                        if (_grid[i*10 + j].getCell() == 1)
+                            grid[i*10 + j] = _u_player;
+                        else
+                            grid[i*10 + j] = _u_player + 1;
+                    }
+                }
+            }
+        Draw();
     }
     /**
      * @param args the command line arguments

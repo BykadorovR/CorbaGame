@@ -15,6 +15,9 @@ public class CorbaGame {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        //GameClient client = new GameClient();
+        //client.main(args);
         VisualApp GUI = new VisualApp();
         GUI.main(args);
         // TODO code application logic here
