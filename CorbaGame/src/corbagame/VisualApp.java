@@ -72,6 +72,11 @@ public class VisualApp extends javax.swing.JFrame {
         });
 
         jButton2.setText("disconnect");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jPanel1.setPreferredSize(new java.awt.Dimension(350, 0));
         jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -134,22 +139,28 @@ public class VisualApp extends javax.swing.JFrame {
         int index = (evt.getY()/28)*10 + (evt.getX()/28);
         if (FindWay(index) == 1)
         {
-            if ((_player == 1) && ((grid[index] == 3) || (grid[index] == 0)))
+            if (grid[index] == 0)
             {
                 grid[index] = _player;
                 _grid[index].setCell(1, MyID);
             }
-            if ((_player == 3) && ((grid[index] == 1) || (grid[index] == 0)))
+            else
             {
-                grid[index] = _player;
-                _grid[index].setCell(1, MyID);
+                grid[index] = _u_player + 1;
+                _grid[index].setCell(2, MyID);
             }
+            
         }
         
         //send grid
         Draw();
         
     }//GEN-LAST:event_jPanel1MouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        _client.disconect();
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     private int FindWay(int index)
     {
@@ -396,23 +407,27 @@ public class VisualApp extends javax.swing.JFrame {
             {
                 if (_grid[i*10 + j].getCell() != 0)
                 {
-                    if (_grid[i*10 + j].getID() == MyID)
+                    if (MyID.equals(_grid[i*10 + j].getID()))
                     {
                         if (_grid[i*10 + j].getCell() == 1)
                             grid[i*10 + j] = _player;
                         else
-                            grid[i*10 + j] = _player + 1;
+                            grid[i*10 + j] = _u_player + 1;
                     }
                     else
                     {
                         if (_grid[i*10 + j].getCell() == 1)
                             grid[i*10 + j] = _u_player;
                         else
-                            grid[i*10 + j] = _u_player + 1;
+                            grid[i*10 + j] = _player + 1;
                     }
                 }
             }
         Draw();
+    }
+    
+    public void StopGame() {
+        jTextArea1.append("STOP GAME\n");
     }
     /**
      * @param args the command line arguments

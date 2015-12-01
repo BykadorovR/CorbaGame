@@ -12,18 +12,21 @@ import Game.IGame;
 import Game.IGameHelper;
 
 public class GameClient extends Thread{
-	static IGame gameImpl;
+	int start;
+        static IGame gameImpl;
 	static String ID = "";
         VisualApp GUI;
         String[] args;
+        ORB orb;
         public GameClient(VisualApp gui)
         {
             GUI = gui;
+            start = 0;
         }
         public void main(String args[]) {
 		
 		try {
-			ORB orb = ORB.init(args, null);
+			orb = ORB.init(args, null);
 			org.omg.CORBA.Object objRef = orb
 					.resolve_initial_references("NameService");
 			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
@@ -38,12 +41,11 @@ public class GameClient extends Thread{
 			ICell[] grid = gameImpl.getGrid();
 			//grid[5].setCell(2,ID);
                         //VisualApp GUI = new VisualApp();
-                        int start = 0;
                         while (true) {
 				if (gameImpl.gameIsReady() == 1) {
 					grid = gameImpl.getGrid();
                                         String[] IDAll = gameImpl.getID();
-                                        System.out.println("I AM CLIENT :" + IDAll[0] + " " + IDAll[1] + " ");
+                                        //System.out.println("I AM CLIENT :" + IDAll[0] + " " + IDAll[1] + " ");
 					if (grid != null) {
 						//Because of client logic is similar the ID of cell is ID of last modify it client
 						//But every sell contain ID of client so you can compare it ID and our for drawing
@@ -56,12 +58,22 @@ public class GameClient extends Thread{
                                         }
                                         else
                                         {
+                                            //gameImpl.wait();
+                                            grid = gameImpl.getGrid();
                                             GUI.SetGrid(grid);
                                         }
                                         //GUI.main(args);
                                         //break;
                                 }
-				Thread.sleep(2000);
+                                else
+                                {
+                                    if (start == 1)
+                                    {
+                                        GUI.StopGame();
+                                        start = 0;
+                                    }
+                                }
+				Thread.sleep(500);
 			}
                         			
 		} catch (Exception e) {
@@ -75,7 +87,12 @@ public class GameClient extends Thread{
 			return;
 		}*/
 	}
-        
+    public void disconect() {
+        gameImpl.disconnect(ID);
+        start = 0;
+    }
+    
+    
     @Override
     public void run() {
         try{
@@ -84,5 +101,5 @@ public class GameClient extends Thread{
             System.out.println(e.getMessage() + "\n");
         }
     }
-       
+    
 }
